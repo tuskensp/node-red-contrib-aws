@@ -1,0 +1,87 @@
+<!--
+  Copyright 2014 IBM Corp.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<script type="text/x-red" data-template-name="amazon cloudwatchlogs">
+    <div class="form-row">
+        <label for="node-input-aws"><i class="fa fa-user"></i> AWS</label>
+        <input type="text" id="node-input-aws">
+    </div>
+    <div class="form-row">
+        <label for="node-input-operation"><i class="fa fa-wrench"></i> Operation</label>
+        <select type="text" id="node-input-operation">
+          <option value="get">Get Logs</option>
+          <option value="put">Put Logs</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-logGroupName"><i class="fa fa-tag"></i>Log Group Name</label>
+        <input type="text" id="node-input-logGroupName" placeholder="name">
+        </input>
+    </div>
+    <div class="form-row">
+        <label for="node-input-logStreamName"><i class="fa fa-tag"></i>Log Stream Name</label>
+        <input type="text" id="node-input-logStreamName" placeholder="name">
+        </input>
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i>Name</label>
+        <input type="text" id="node-input-name" placeholder="">
+        </input>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="amazon cloudwatchlogs">
+<p>
+Nodes to access and submit logs from AWS Cloud Watch Logs.
+</p>
+<p>
+<b>Get</b>
+  Get logs
+</p>
+<p>
+<b>Put</b>
+Put logs
+</p>
+<p>
+<p>
+NOTE: Parameters specified in the msg override the node configuration.
+</p>
+
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('amazon cloudwatchlogs',{
+        category: 'AWS',
+        color:"#C0DEED",
+        defaults: {
+            aws: {type:"aws-config",required:true},
+            operation: { value: 'put' },
+            logGroupName: { value: "" },
+            logStreamName: { value: "" },
+            name: {value:""}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "amazon.png",
+        align: "right",
+        label: function() {
+            return this.name || "cloudwatchlogs " + this.operation;
+        },
+        oneditprepare: function () {
+
+        }
+    });
+</script>

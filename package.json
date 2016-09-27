@@ -31,6 +31,8 @@
       "amazon dynamodb": "dynamodb.js",
       "amazon sns": "sns.js",
       "amazon sqs": "sqs.js",
+      "amazon cloudwatch logs": "cloudwatchlogs.js",
+      "amazon iot": "iot.js",
       "amazon config": "aws-config.js"
     }
   },
