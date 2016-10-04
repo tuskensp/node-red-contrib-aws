@@ -48,6 +48,7 @@ module.exports = function(RED) {
               if (err) {
                 node.status({fill:"red",shape:"ring",text:"error"});
                 node.error("failed: " + err.toString(),msg);
+                node.warn(JSON.stringify(err));
                 return;
               } else {
                 msg.payload = data;
@@ -95,7 +96,7 @@ module.exports = function(RED) {
                 };
 
                 if (msg.sequenceToken) {params.sequenceToken=msg.sequenceToken};
-
+                console.log(JSON.stringify(params));
                 cwl.putLogEvents(params, node.sendMsg);
                 break;
               }
