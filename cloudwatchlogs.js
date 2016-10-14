@@ -48,7 +48,9 @@ module.exports = function(RED) {
               if (err) {
                 node.status({fill:"red",shape:"ring",text:"error"});
                 node.error("failed: " + err.toString(),msg);
-                node.warn(JSON.stringify(err));
+                node.warn("data: "+JSON.stringify(data.toString()));
+                node.warn("msg: "+JSON.stringify(msg.toString()));
+
                 return;
               } else {
                 msg.payload = data;
@@ -63,41 +65,50 @@ module.exports = function(RED) {
                 node.error("Log Group/Stream not specified",msg);
                 return;
             }
-            switch (node.operation) {
-              case 'get':
-                node.status({fill:"blue",shape:"dot",text:"getting"});
-                var params = {
-                  logGroupName: logGroupName, /* required */
-                  logStreamName: logStreamName, /* required */
-                  startFromHead: msg.startFromHead || false
+            function cwl_get(cwl,msg,node){
+              node.status({fill:"blue",shape:"dot",text:"getting"});
+              var params = {
+                logGroupName: logGroupName, /* required */
+                logStreamName: logStreamName, /* required */
+                startFromHead: msg.startFromHead || false
 
-                };
-                if (msg.nextToken){
-                  params.nextToken=msg.nextToken
-                }
-                //endTime: msg.endTime || 0,
+              };
+              if (msg.nextToken){
+                params.nextToken=msg.nextToken
+              }
+              //endTime: msg.endTime || 0,
 //startTime: msg.startTime || 0
 //limit: msg.limit ||1 ,
 
-                cwl.getLogEvents(params, node.sendMsg);
+              cwl.getLogEvents(params, node.sendMsg);
+
+            }
+
+            function cwl_put(cwl,msg,node){
+              node.status({fill:"blue",shape:"dot",text:"Putting"});
+              var params = {
+                logEvents: [ /* required */
+                    {
+                      message: msg.payload, /* required */
+                      timestamp: msg.timestamp || Date.now() /* required */
+                    },
+                    /* more items */
+                  ],
+                  logGroupName: logGroupName, /* required */
+                  logStreamName: logStreamName /* required */
+              };
+
+              if (msg.sequenceToken) {params.sequenceToken=msg.sequenceToken};
+              console.log(JSON.stringify(params));
+              cwl.putLogEvents(params, node.sendMsg);
+            }
+
+            switch (node.operation) {
+              case 'get':
+                cwl_get(cwl,msg,node);
                 break;
               case 'put':
-                node.status({fill:"blue",shape:"dot",text:"Putting"});
-                var params = {
-                  logEvents: [ /* required */
-                      {
-                        message: msg.payload, /* required */
-                        timestamp: msg.timestamp || Date.now() /* required */
-                      },
-                      /* more items */
-                    ],
-                    logGroupName: logGroupName, /* required */
-                    logStreamName: logStreamName /* required */
-                };
-
-                if (msg.sequenceToken) {params.sequenceToken=msg.sequenceToken};
-                console.log(JSON.stringify(params));
-                cwl.putLogEvents(params, node.sendMsg);
+                cwl_put(cwl,msg,node);
                 break;
               }
         });
