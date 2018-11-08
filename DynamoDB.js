@@ -431,7 +431,9 @@ module.exports = function(RED) {
 			var params={};
 			//copyArgs
 			
-			copyArg(n,"TableName",params,undefined,false); 
+			copyArg(n,"TableName",params,undefined,false);
+			copyArg(n,"KeyConditionExpression",params,undefined,false);
+			copyArg(n,"ExpressionAttributeValues",params,undefined,false);
 			
 			copyArg(msg,"TableName",params,undefined,false); 
 			copyArg(msg,"IndexName",params,undefined,false); 
